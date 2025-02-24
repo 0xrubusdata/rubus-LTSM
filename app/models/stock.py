@@ -1,4 +1,6 @@
-from app.repository import DataPoint, Dataset, ModelConfig
+from app.models.data_point import DataPoint
+from app.models.dataset import Dataset
+from app.models.model_config import ModelConfig
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 

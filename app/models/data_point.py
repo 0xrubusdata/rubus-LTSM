@@ -1,5 +1,5 @@
-from app.models import Stock
-from app.repository import NormalizedData
+from app.models.normalized_data import NormalizedData
+from app.models.stock import Stock
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional
 from datetime import date

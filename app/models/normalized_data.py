@@ -1,4 +1,5 @@
-from app.models import DataPoint, Dataset
+from app.models.data_point import DataPoint
+from app.models.dataset import Dataset
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional
 

@@ -1,13 +1,14 @@
 from sqlmodel import Session, select
 from app.models import Stock, DataPoint
 from app.config.settings import CONFIG
-from alpha_vantage.timeseries import TimeSeries
+from factory.alpha_vantage_factory import alpha_vantage_factory
 from .normalizationService import normalize_data
 from .datasetprepService import prepare_dataset
 
 class AcquisitionService:
     @staticmethod
-    def acquire_data(symbol: str, outputsize: str, session: Session):
+    def acquire_data(symbol: str, data_source: str, outputsize: str, session: Session):
+        # Check or create stock (assuming symbol is relevant across data sources)
         stock = session.exec(select(Stock).where(Stock.symbol == symbol)).first()
         if not stock:
             stock = Stock(symbol=symbol)
@@ -15,14 +16,30 @@ class AcquisitionService:
             session.commit()
             session.refresh(stock)
 
-        ts = TimeSeries(key=CONFIG["alpha_vantage"]["key"])
-        data, _ = ts.get_daily_adjusted(symbol, outputsize=outputsize)
-        
+        # Get the appropriate Alpha Vantage service
+        service = alpha_vantage_factory.get_service(data_source)
+
+        # Fetch data based on source (focus on time-series-like data for LSTM)
+        if data_source == "timeseries":
+            data, _ = service.get_daily_adjusted(symbol, outputsize=outputsize)
+            key_value = CONFIG["alpha_vantage"]["key_adjusted_close"]
+        elif data_source == "cryptocurrencies":
+            data, _ = service.get_daily(symbol, market="USD", outputsize=outputsize)
+            key_value = "4b. close (USD)"  # Adjust based on Alpha Vantage response
+        elif data_source == "foreignexchange":
+            data, _ = service.get_daily(from_symbol=symbol[:3], to_symbol=symbol[3:], outputsize=outputsize)
+            key_value = "4. close"
+        else:
+            # Placeholder for non-time-series data; extend as needed
+            raise ValueError(f"Data source '{data_source}' not yet supported for time-series prediction")
+
+        # Extract and reverse data
         data_date = [date for date in data.keys()]
         data_date.reverse()
-        data_close_price = [float(data[date][CONFIG["alpha_vantage"]["key_adjusted_close"]]) for date in data.keys()]
+        data_close_price = [float(data[date][key_value]) for date in data.keys()]
         data_close_price.reverse()
 
+        # Persist raw data as DataPoints
         data_points = []
         for date_str, price in zip(data_date, data_close_price):
             dp = DataPoint(stock_id=stock.id, date=date_str, adjusted_close=price)
@@ -30,6 +47,7 @@ class AcquisitionService:
             data_points.append(dp)
         session.commit()
 
+        # Normalize and prepare dataset
         norm_result = normalize_data(data_points, session)
         dataset_result = prepare_dataset(
             stock_id=stock.id,

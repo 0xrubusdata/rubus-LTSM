@@ -11,6 +11,7 @@ router = APIRouter()
 def acquire_data(data_in: AcquireDataIn, session: Session = Depends(get_session)):
     result = acquisition_service.acquire_data(
         symbol=data_in.symbol,
+        data_source=data_in.data_source, 
         outputsize=data_in.outputsize,
         session=session
     )

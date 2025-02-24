@@ -1,4 +1,6 @@
-from app.models import NormalizedData, Stock, TrainingRun
+from app.models.normalized_data import NormalizedData
+from app.models.stock import Stock
+from app.models.training_run import TrainingRun
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from datetime import datetime

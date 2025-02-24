@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 class DefineModelIn(BaseModel):
+    model_name: str
     stock_symbol: str
     input_size: int = 1
     num_lstm_layers: int = 2

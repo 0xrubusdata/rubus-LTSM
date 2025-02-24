@@ -8,7 +8,7 @@ from app.routes.plot import router as plot_router
 
 engine = create_engine(DATABASE_URL)
 app = FastAPI(
-    title="Rubus LSTM Stock Prediction API",
+    title="Rubus LSTM API",
     description="API for stock price prediction using LSTM.",
     version="0.1.0"
 )

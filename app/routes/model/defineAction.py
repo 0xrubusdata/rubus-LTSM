@@ -16,6 +16,7 @@ def define_model(data_in: DefineModelIn, session: Session = Depends(get_session)
     
     model_config = ModelConfig(
         stock_id=stock.id,
+        model_name=data_in.model_name,
         input_size=data_in.input_size,
         num_lstm_layers=data_in.num_lstm_layers,
         lstm_size=data_in.lstm_size,
@@ -28,6 +29,7 @@ def define_model(data_in: DefineModelIn, session: Session = Depends(get_session)
     
     return ModelConfigOut(
         id=model_config.id,
+        model_name=model_config.model_name,
         stock_symbol=data_in.stock_symbol,
         input_size=model_config.input_size,
         num_lstm_layers=model_config.num_lstm_layers,

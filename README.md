@@ -7,7 +7,7 @@
 This is a FastAPI-based API for stock price prediction using an LSTM model, integrated with Alpha Vantage for data acquisition and PostgreSQL for persistence. It supports data preparation, model training, evaluation, prediction, and visualization.
 
 ## Features
-- **Data Acquisition**: Fetch stock data from Alpha Vantage.
+- **Data Acquisition**: Fetch data from multiple Alpha Vantage APIs (timeseries, cryptocurrencies, foreignexchange, and more).
 - **Data Preparation**: Normalize data and generate train/validation datasets.
 - **Model Management**: Define, train, and evaluate LSTM models.
 - **Prediction**: Forecast the next day's stock price.

@@ -1,4 +1,6 @@
-from app.models import Dataset, ModelConfig, Prediction
+from app.models.dataset import Dataset
+from app.models.model_config import ModelConfig
+from app.models.prediction import Prediction
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from datetime import datetime
